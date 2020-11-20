@@ -54,7 +54,7 @@ public class WorkerWrapper<T, V> {
      * <p>
      * 1-finish, 2-error, 3-working
      */
-    private AtomicInteger state = new AtomicInteger(0);
+    private AtomicInteger state = new AtomicInteger(INIT);
     /**
      * 该map存放所有wrapper的id和wrapper映射
      */
