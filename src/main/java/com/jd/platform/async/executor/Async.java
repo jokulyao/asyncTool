@@ -1,8 +1,6 @@
 package com.jd.platform.async.executor;
 
 
-import com.jd.platform.async.callback.DefaultGroupCallback;
-import com.jd.platform.async.callback.IGroupCallback;
 import com.jd.platform.async.wrapper.WorkerWrapper;
 
 import java.util.*;
@@ -61,29 +59,6 @@ public class Async {
      */
     public static boolean beginWork(long timeout, WorkerWrapper... workerWrapper) throws ExecutionException, InterruptedException {
         return beginWork(timeout, COMMON_POOL, workerWrapper);
-    }
-
-    /**
-     * 异步执行,直到所有都完成,或失败后，发起回调
-     */
-    public static void beginWorkAsync(long timeout, IGroupCallback groupCallback, WorkerWrapper... workerWrapper) {
-        if (groupCallback == null) {
-            groupCallback = new DefaultGroupCallback();
-        }
-        IGroupCallback finalGroupCallback = groupCallback;
-        CompletableFuture.runAsync(() -> {
-            try {
-                boolean success = beginWork(timeout, COMMON_POOL, workerWrapper);
-                if (success) {
-                    finalGroupCallback.success(Arrays.asList(workerWrapper));
-                } else {
-                    finalGroupCallback.failure(Arrays.asList(workerWrapper), new TimeoutException());
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-                finalGroupCallback.failure(Arrays.asList(workerWrapper), e);
-            }
-        });
     }
 
     /**
